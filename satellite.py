@@ -3,9 +3,11 @@ from datetime import datetime
 from typing import Optional
 
 class InvalidTLEError(Exception):
+    """Custom exception for invalid TLE data."""
     pass
 
 def compute_checksum(line: str) -> int:
+    """Calculate checksum for a TLE line."""
     total = 0
     for char in line[:68]:
         if char.isdigit():
@@ -15,6 +17,7 @@ def compute_checksum(line: str) -> int:
     return total % 10
 
 def validate_tle(line1: str, line2: str):
+    """Validate TLE line formats and checksums."""
     if not line1.startswith('1') or len(line1.strip()) != 69:
         raise InvalidTLEError("Line 1 of the TLE must start with '1' and be exactly 69 characters long.")
     if not line2.startswith('2') or len(line2.strip()) != 69:
@@ -28,6 +31,7 @@ def validate_tle(line1: str, line2: str):
             raise InvalidTLEError("Last digit in line of the TLE is not a digit.")
 
 def get_satellite_position(line1: str, line2: str, timestamp: Optional[datetime] = None):
+    """Return satellite (x, y, z) position from TLE at a given time."""
     validate_tle(line1, line2)
 
     if timestamp is None:

@@ -5,11 +5,13 @@ from satellite import get_satellite_position, InvalidTLEError
 from typing import Optional
 
 class TLERequest(BaseModel):
+    """Request body model for TLE data and optional timestamp."""
     line1: str
     line2: str
     timestamp: Optional[datetime] = None
 
 class PositionResponse(BaseModel):
+    """Response model for satellite position in kilometers."""
     x: float
     y: float
     z: float
@@ -18,6 +20,7 @@ app = FastAPI()
 
 @app.post("/position", response_model=PositionResponse)
 def get_position(data: TLERequest):
+    """Compute satellite position from TLE and return (x, y, z) coordinates."""
     try:
         position = get_satellite_position(data.line1, data.line2, data.timestamp)
         return PositionResponse(x=position[0], y=position[1], z=position[2])
